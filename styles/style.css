@@ -2489,6 +2489,41 @@
   }
 }
 
+/* ── 모바일 헤더 한 줄 유지 (템플릿 확장) ─────────────────────────
+   원본은 로고(float 없는 inline-block) 옆에 `.hd_right{float:right}` 를 띄운다. 원본 버튼은
+   예약하기 하나였지만 여기엔 YBS 가 더해져, 로고 상자(170px) + 버튼 묶음(약 250px)이 375px
+   화면을 넘으면 버튼 묶음이 로고 아래 줄로 떨어진다 (thestarspa.kr 등).
+   데스크톱 메뉴(.hd_lnb)가 사라지는 1023px 이하에서만 flex 로 바꿔, 자리가 모자라면
+   로고 상자가 줄어들고(이미지는 object-fit:contain 이라 비율 유지) 버튼 묶음은 한 줄을 지킨다.
+   - 로고 폭은 위 미디어쿼리 값(200/170/140px)이 상한이고 그 아래로만 줄어든다.
+   - `.hd_inner:after`(clearfix) 도 flex 항목이 되므로 space-between 대신
+     `.hd_right{margin-left:auto}` 로 오른쪽 끝에 붙인다.
+   - 예약하기의 특가 배지(`.res_ico`)가 버튼 왼쪽으로 튀어나와(479px 이하 -22px) 로고를 덮지
+     않도록 로고 오른쪽을 24px 띄운다 (gap 은 :after 뒤에도 생겨 버튼이 밀리므로 margin 으로 준다).
+   - 479px 이하는 버튼 좌우 여백을 줄여 로고 자리를 더 남긴다 (원본은 350px 이하에서만 줄였다). */
+@media only screen and (max-width: 1023px) {
+  .header .hd_inner {
+    display: flex;
+    align-items: flex-start;
+  }
+  .header .logo {
+    flex: 0 1 auto;
+    min-width: 0;
+    margin-right: 24px;
+  }
+  .header .hd_right {
+    float: none;
+    flex: 0 0 auto;
+    margin-left: auto;
+    white-space: nowrap;
+  }
+}
+@media only screen and (max-width: 479px) {
+  .header .hd_right .btn_reserve {
+    padding: 0 1.25em;
+  }
+}
+
 /* 로고 이미지가 없을 때의 숙소명 텍스트 폴백.
    ⚠️ 기본값을 `none` 으로 두면 안 된다. 매퍼는 노출할 때 `style.display = ''` 로
       인라인 스타일을 지우는데, 그러면 이 규칙의 `none` 으로 되돌아가 영영 안 보인다.
